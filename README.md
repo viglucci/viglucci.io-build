@@ -12,7 +12,7 @@ git clone https://github.com/viglucci/viglucci.io-build.git .
 docker build -t viglucci.io-build --no-cache .
 ```
 
-## run gulp commands
+## Run Commands
 
 ```bash
 docker run --rm -v "C:path/to/src:/opt" viglucci.io-build gulp build:production
