@@ -11,15 +11,16 @@ var mustache = require("mustache");
 var fsp      = require("fs-promise");
 var env      = require("node-env-file");
 
-env(path.resolve("./env/.env"));
+env(path.resolve(".aws/env/.env"));
 
 var log = console.log.bind(console);
 
-var MANIFEST_PATH   = path.resolve("./.aws/build-manifest.json");
-var DOCKER_REGISTRY = process.env.DOCKER_REGISTRY;
-var SHA             = null;
-var TAGS_SHA        = null;
-var TAGS_LATEST     = `${DOCKER_REGISTRY}/viglucci.io:latest`;
+var MANIFEST_PATH     = path.resolve("./.aws/build-manifest.json");
+var DOCKER_REGISTRY   = process.env.DOCKER_REGISTRY;
+var DOCKER_REPOSITORY = process.env.DOCKER_REPOSITORY;
+var SHA               = null;
+var TAGS_SHA          = null;
+var TAGS_LATEST       = `${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:latest`;
 
 gulp.task("docker", function (done) {
     run("clean:manifest",
@@ -33,7 +34,7 @@ gulp.task("docker:build", function (done) {
     GIT.getSha()
     .then(function (sha) {
         SHA      = sha;
-        TAGS_SHA = `${DOCKER_REGISTRY}/viglucci.io:${SHA}`;
+        TAGS_SHA = `${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${SHA}`;
     })
     .then(function () {
 
@@ -43,6 +44,7 @@ gulp.task("docker:build", function (done) {
             "-t",  TAGS_SHA,
             "-t",  TAGS_LATEST,
             "-f", "./Dockerfile",
+            // "--no-cache",
             "."
         ];
         
